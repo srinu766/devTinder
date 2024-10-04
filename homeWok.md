@@ -36,3 +36,4 @@
 - diff between app.use() vs ap.all()     
 - Write a dummy auth middleware for admin
 - Write a dummy auth middleware for user 
+- Error handling using a  app.use("/", (err, req, res,next)
