@@ -49,6 +49,37 @@ try{
 }
 })
 
+// delete user
+app.delete("/user", async (req, res) => {
+  const userId = req.body.userId
+  try {
+    const user = await User.findByIdAndDelete(userId);  
+    // const user = await User.findByIdAndDelete({_id: userId});
+    if (!user) {
+      return res.status(404).send("User not found");
+    }
+    res.send("User deleted successfully");
+  } catch (err) {
+    res.status(400).send("Something went wrong");
+  }
+});
+
+// update user
+app.patch("/user", async (req, res) => {
+  const userId = req.body.userId;
+  const updates = req.body;
+  try {
+    const user = await User.findByIdAndUpdate(userId, updates, { new: true, runValidators: true });
+    if (!user) {
+      return res.status(404).send("User not found");
+    }
+    res.send("User updated successfully");
+  } catch (err) {
+    res.status(400).send("Something went wrong");
+  }
+});
+
+
 
 
 connectDB()
