@@ -15,7 +15,12 @@ const user  = new User(req.body)
     await user.save();
     res.send("User created sucessfully!")
   } catch (err){
-    res.status(400).send('Error saving the user '+ err.message);
+    // res.status(400).send('Error saving the user '+ err.message);
+    if (err.code === 11000) {
+      res.status(400).send("Email is already in use.");
+    } else {
+      res.status(400).send('Error saving the user: ' + err.message);
+    }
   }
 })
 
@@ -69,7 +74,7 @@ app.patch("/user", async (req, res) => {
   const userId = req.body.userId;
   const updates = req.body;
   try {
-    const user = await User.findByIdAndUpdate(userId, updates, { new: true, runValidators: true });
+    const user = await User.findByIdAndUpdate(userId, updates, { returnDocument: "after", runValidators: true });
     if (!user) {
       return res.status(404).send("User not found");
     }
