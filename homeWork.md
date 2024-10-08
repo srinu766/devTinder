@@ -72,3 +72,4 @@
 - Install validator
 - Explore validator library and use validator  functions for password, email, photoURL
 - NEVER TRUST req.body
+- NEVER TRUST req.body
