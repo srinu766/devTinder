@@ -70,17 +70,66 @@ app.delete("/user", async (req, res) => {
 });
 
 // update user
+// app.patch("/user", async (req, res) => {
+//   const userId = req.body.userId;
+//   const updates = req.body;
+
+ 
+
+//   try {
+//     const ALLOWED_UPDATES = [
+//       "photoUrl", "about", "gender", "age", 
+//     ]
+  
+//     const isUpdateAllowed = Object.keys(data).every((k)=>
+//     ALLOWED_UPDATES.includes(k)
+//   )
+//   if(!isUpdateAllowed){
+//    throw new Error("Update not allowed")
+//   }
+
+//     const user = await User.findByIdAndUpdate(userId, updates, { returnDocument: "after", runValidators: true });
+//     if (!user) {
+//       return res.status(404).send("User not found");
+//     }
+//     res.send("User updated successfully");
+//   } catch (err) {
+//     res.status(400).send("Something went wrong");
+//   }
+// });
+
+// PATCH /user - Update user details
+// PATCH /user - Update user details
 app.patch("/user", async (req, res) => {
-  const userId = req.body.userId;
+  const userId = req.body.userId;  // Ensure userId is provided in request body
   const updates = req.body;
+
   try {
-    const user = await User.findByIdAndUpdate(userId, updates, { returnDocument: "after", runValidators: true });
-    if (!user) {
-      return res.status(404).send("User not found");
-    }
-    res.send("User updated successfully");
+    const ALLOWED_UPDATES = ["photoUrl", "about", "gender", "age"];
+    
+    // Ensure all provided updates are allowed
+    const isUpdateAllowed = Object.keys(updates).every((key) =>
+      ALLOWED_UPDATES.includes(key)
+    );
+
+    // if (!isUpdateAllowed) {
+    //   throw new Error("Update not allowed");
+    // }
+
+    // Update the user
+    const user = await User.findByIdAndUpdate(userId, updates, {
+      new: true, // return the updated document
+      runValidators: true, // validate updates
+    });
+
+    // if (!user) {
+    //   return res.status(404).send("User not found");
+    // }
+
+    res.status(200).send(user); // return updated user
   } catch (err) {
-    res.status(400).send("Something went wrong");
+    console.error("Error updating user:", err.message); // Log the error
+    res.status(400).send(err.message || "Something went wrong");
   }
 });
 
