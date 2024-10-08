@@ -71,3 +71,4 @@
 - Data sanitizing add API validation for each feild 
 - Install validator
 - Explore validator library and use validator  functions for password, email, photoURL
+- NEVER TRUST req.body
