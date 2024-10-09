@@ -73,3 +73,6 @@
 - Explore validator library and use validator  functions for password, email, photoURL
 - NEVER TRUST req.body
 - NEVER TRUST req.body
+- valiadte data in signup api and create a helper function in utils
+- Install bcrypt package
+- Create password hash using bcrypt.hash and save the password in DB
