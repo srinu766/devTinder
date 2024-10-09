@@ -76,3 +76,6 @@
 - valiadte data in signup api and create a helper function in utils
 - Install bcrypt package
 - Create password hash using bcrypt.hash and save the password in DB
+- create login API
+- Compare passwords and throw errors if email,password is not valid
+-
