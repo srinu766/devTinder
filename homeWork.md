@@ -79,3 +79,11 @@
 - create login API
 - Compare passwords and throw errors if email,password is not valid
 -
+- install cookie-parser
+- just send dummy cookie for user
+- create GET /profile API and check if you the cookie back
+- In login API, create e JWT token
+-
+- install jsonwebtoken
+- In login API, after email, password validation, create a JWT token and send it to user in side cookie
+- read the cookie inside your profile API and find the logged in user
