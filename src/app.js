@@ -1,12 +1,16 @@
 const express = require("express");
 const connectDB = require("../src/config/database");
+const app = express();
 const User = require('../src/models/user')
+const Products = require('../src/models/products')
 const {validateSignUpData} = require("./utils/validation")
 const bcrypt = require("bcrypt")
+const cookieParser = require("cookie-parser")
+const jwt = require("jsonwebtoken");
 
-const app = express();
 
 
+app.use(cookieParser())
 app.use(express.json())
 
 
@@ -52,6 +56,15 @@ app.post("/login",async(req,res)=>{
     const isPasswordValid = await bcrypt.compare(password,user.password)
     console.log("isPasswordValid",isPasswordValid);
     if(isPasswordValid){
+      //  Create a JWT token
+
+      // Add the token to cookie and send the response back to the user
+
+      const token = await jwt.sign({_id:user._id}, "DEV@Tinder$790")
+
+      console.log("token",token)
+
+      res.cookie("token", token)
       res.send("Login Successfull!!!")
     }else{
       throw new Error("Invalid credentials")
@@ -61,6 +74,31 @@ app.post("/login",async(req,res)=>{
     res.status(400).send('ERROR :  saving the user: ' + err.message);
   }
 })
+
+app.get("/profile", async (req,res)=>{
+ try{ const cookie = req.cookies
+  const {token} = cookie
+
+  if(!token){
+    throw new Error("Invalid Token")
+  }
+
+  const decodedMessage  = await jwt.verify(token,  "DEV@Tinder$790")
+
+  const {_id} = decodedMessage;
+
+  const user = await User.findById(_id)
+
+  if(!user){
+    throw new Error("User Does not  exist")
+  }
+ 
+  res.send(user);}
+  catch (err){
+    res.status(400).send('ERROR : ' + err.message);
+  }
+})
+
 
 // get user by email
 app.get("/user", async(req, res)=>{
@@ -108,105 +146,127 @@ app.delete("/user", async (req, res) => {
 });
 
 // update user
-// app.patch("/user", async (req, res) => {
-//   const userId = req.body.userId;
-//   const updates = req.body;
-
- 
-
-//   try {
-//     const ALLOWED_UPDATES = [
-//       "photoUrl", "about", "gender", "age", 
-//     ]
-  
-//     const isUpdateAllowed = Object.keys(data).every((k)=>
-//     ALLOWED_UPDATES.includes(k)
-//   )
-//   if(!isUpdateAllowed){
-//    throw new Error("Update not allowed")
-//   }
-
-//     const user = await User.findByIdAndUpdate(userId, updates, { returnDocument: "after", runValidators: true });
-//     if (!user) {
-//       return res.status(404).send("User not found");
-//     }
-//     res.send("User updated successfully");
-//   } catch (err) {
-//     res.status(400).send("Something went wrong");
-//   }
-// });
-
-// PATCH /user - Update user details
-// PATCH /user - Update user details
-// app.patch("/user", async (req, res) => {
-//   const userId = req.body.userId;  // Ensure userId is provided in request body
-//   const updates = req.body;
-
-//   try {
-//     const ALLOWED_UPDATES = ["photoUrl", "about", "gender", "age"];
-    
-//     // Ensure all provided updates are allowed
-//     const isUpdateAllowed = Object.keys(updates).every((key) =>
-//       ALLOWED_UPDATES.includes(key)
-//     );
-
-//     // if (!isUpdateAllowed) {
-//     //   throw new Error("Update not allowed");
-//     // }
-
-//     // Update the user
-//     const user = await User.findByIdAndUpdate(userId, updates, {
-//       new: true, // return the updated document
-//       runValidators: true, // validate updates
-//     });
-
-//     // if (!user) {
-//     //   return res.status(404).send("User not found");
-//     // }
-
-//     res.status(200).send(user); // return updated user
-//   } catch (err) {
-//     console.error("Error updating user:", err.message); // Log the error
-//     res.status(400).send(err.message || "Something went wrong");
-//   }
-// });
-
 app.patch("/user", async (req, res) => {
-  const { userId, ...updates } = req.body;  // Destructure userId from the updates
-
-  if (!userId) {
-    return res.status(400).send("User ID is required");
-  }
-
-  const ALLOWED_UPDATES = ["photoUrl", "about", "gender", "age"];
-  
-  // Ensure all provided updates are allowed
-  const isUpdateAllowed = Object.keys(updates).every((key) =>
-    ALLOWED_UPDATES.includes(key)
-  );
-
-  if (!isUpdateAllowed) {
-    return res.status(400).send("Update not allowed");
-  }
-
+  const userId = req.body.userId;
+  const updates = req.body;
   try {
-    // Update the user
-    const user = await User.findByIdAndUpdate(userId, updates, {
-      new: true, // return the updated document
-      runValidators: true, // validate updates
-    });
+    const ALLOWED_UPDATES = [
+      "photoUrl", "about", "gender", "age", 
+    ]
+  
+    const isUpdateAllowed = Object.keys(data).every((k)=>
+    ALLOWED_UPDATES.includes(k)
+  )
+  if(!isUpdateAllowed){
+   throw new Error("Update not allowed")
+  }
 
+    const user = await User.findByIdAndUpdate(userId, updates, { returnDocument: "after", runValidators: true });
     if (!user) {
       return res.status(404).send("User not found");
     }
-
-    res.status(200).send(user); // return updated user
+    res.send("User updated successfully");
   } catch (err) {
-    console.error("Error updating user:", err.message); // Log the error
-    res.status(400).send(err.message || "Something went wrong");
+    res.status(400).send("Something went wrong");
   }
 });
 
+
+
+
+// products
+
+// app.post("/products", async (req, res) => {
+//   try {
+//       const { productName, productWaight, productLocation } = req.body;
+
+//       const lastProduct = await Products.findOne().sort({ createdAt: -1 });
+
+//       let newProductID = "product001"; 
+
+//       if (lastProduct) {
+//           const lastID = lastProduct.productID;
+//           const numberPart = parseInt(lastID.replace("product", "")) + 1;
+//           newProductID = "product" + numberPart.toString().padStart(3, "0");
+//       }
+
+//       const newProduct = new Products({
+//           productID: newProductID,
+//           productName,
+//           productWaight,
+//           productLocation
+//       });
+
+//       await newProduct.save();
+//       res.send("Product created successfully with ID: " + newProductID);
+//   } catch (err) {
+//       res.status(400).send("Error saving the Product: " + err.message);
+//   }
+// });
+
+// app.patch("/products", async (req, res) => {
+//   try {
+//     const { productID, productName, productWaight, productLocation } = req.body;
+//     if (!productID) {
+//       return res.status(400).send("Product ID is required to update the product!");
+//     }
+
+//     const updatedProduct = await Products.findOneAndUpdate(
+//       { productID },
+//       { productName, productWaight, productLocation },
+//       { new: true, runValidators: true }
+//     );
+
+//     if (!updatedProduct) {
+//       return res.status(404).send("Product not found!");
+//     }
+
+//     res.send("Product updated successfully!");
+//   } catch (err) {
+//     res.status(400).send("Error updating the product: " + err.message);
+//   }
+// });
+
+// app.delete("/products", async (req, res) => {
+//   try {
+//     const { productID } = req.query;
+//     if (!productID) {
+//       return res.status(400).send("Product ID is required to delete the product!");
+//     }
+//     const deletedProduct = await Products.findOneAndDelete({ productID });
+
+//     if (!deletedProduct) {
+//       return res.status(404).send("Product not found!");
+//     }
+
+//     res.send("Product deleted successfully!");
+//   } catch (err) {
+//     res.status(400).send("Error deleting the product: " + err.message);
+//   }
+// });
+
+// Get all products
+// app.get("/products", async (req, res) => {
+//   try {
+//     const products = await Products.find();
+//     res.json(products);
+//   } catch (err) {
+//     res.status(400).send("Error fetching products: " + err.message);
+//   }
+// });
+// app.get("/products/:id", async (req, res) => {
+//   try {
+//     const { id } = req.params;
+//     const product = await Products.findOne({ productID: id });
+
+//     if (!product) {
+//       return res.status(404).send("Product not found!");
+//     }
+//     res.json(product);
+//   } catch (err) {
+//     res.status(400).send("Error fetching the product: " + err.message);
+//   }
+// });
 
 
 
