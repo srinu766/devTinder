@@ -87,3 +87,8 @@
 - install jsonwebtoken
 - In login API, after email, password validation, create a JWT token and send it to user in side cookie
 - read the cookie inside your profile API and find the logged in user
+- userAuth middleware
+- Add the userAuth middleware in profile API, sendConnectionRequest API
+- Set the expriry of JWT token and cookies to 7 days
+- Create userShema methods to getJWT()
+- Create userShema methods to getJWT()
