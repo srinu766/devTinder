@@ -87,3 +87,33 @@
 - install jsonwebtoken
 - In login API, after email, password validation, create a JWT token and send it to user in side cookie
 - read the cookie inside your profile API and find the logged in user
+- userAuth middleware
+- Add the userAuth middleware in profile API, sendConnectionRequest API
+- Set the expriry of JWT token and cookies to 7 days
+- Create userShema methods to getJWT()
+- Create userShema methods to getJWT()
+- 
+
+
+- Explore tinder APIs  
+- Create a list all API you think of in Dev Tinder on platform
+- Group multiple routes under respective routers
+- Read documentation for express.Router
+- Create routes folder for managing auth,profile, request routers
+- create authRoter, profileRouter, requestRouter 
+- import these routers in app.js
+- Create POST /logout API
+- Create PATCH /profile/edit
+- Create PATCH /profile/password => forgot password
+- Make you validate all data in every post patch APIs
+
+- Create Connection Request Schema 
+- Send connection request API
+- Proper validations of data
+- Think about all corner cases of data
+- $or query and $and query in mongoDB read about this
+- Schema.pre("save") function
+- Read more about indexes in MongoDB
+- Why do we need index 
+- what is advantage and disadvatages creating indexes
+- Read the article about compond indexes
