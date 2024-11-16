@@ -117,3 +117,14 @@
 - Why do we need index 
 - what is advantage and disadvatages creating indexes
 - Read the article about compond indexes
+- ALWAYS THINK ABOUT CORNER CASES
+
+- write proper validation for this POST : /request/review/:status/:requestedId
+- thought process - POST vs GET
+- Read about ref and populate 
+- Create GET api -  /user/connection/received
+
+- Logic for API feed
+- Explore the $nin, $and, $ne and othher quesry parametors
+- Pagination
+
