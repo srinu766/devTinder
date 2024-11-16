@@ -53,7 +53,7 @@ const userSchema = new mongoose.Schema({
   },
   photoUrl:{
     type:String,
-    default:"https://example.com/photo.jpg",
+    default:"https://weimaracademy.org/wp-content/uploads/2021/08/dummy-user.png",
     validate(value){
       if(!validator.isURL(value)){
         throw new Error("Invalid Photo URL : "+value)
