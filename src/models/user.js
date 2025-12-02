@@ -51,6 +51,16 @@ const userSchema = new mongoose.Schema({
       message:`{VALUE} is incorrect gender type`
   }
   },
+  isPremium:{
+    type:Boolean,
+    default:false
+  },
+  membershipType:{
+    type:String,
+  },
+  // membershipValidity:{
+  //   type:Date,
+  // },
   photoUrl:{
     type:String,
     default:"https://weimaracademy.org/wp-content/uploads/2021/08/dummy-user.png",
